@@ -24,8 +24,23 @@ namespace AspectCoreDemo
             services.AddTransient<ICustomService, CustomService>();
             services.AddDynamicProxy(config => 
             {
-                //config.Interceptors.AddServiced<CustomInterceptor>();
-                //config.Interceptors.AddTyped<CustomInterceptor>(method => method.DeclaringType.Name.EndsWith("Service"));
+                ////App1命名空间下的Service不会被代理
+                //config.NonAspectPredicates.AddNamespace("App1");
+
+                ////最后一级为App1的命名空间下的Service不会被代理
+                //config.NonAspectPredicates.AddNamespace("*.App1");
+
+                ////ICustomService接口不会被代理
+                //config.NonAspectPredicates.AddService("ICustomService");
+
+                //后缀为Service的接口和类不会被代理
+                //config.NonAspectPredicates.AddService("*Service");
+
+                ////命名为Query的方法不会被代理
+                //config.NonAspectPredicates.AddMethod("Query");
+
+                ////后缀为Query的方法不会被代理
+                //config.NonAspectPredicates.AddMethod("*Query");
                 config.Interceptors.AddTyped<CustomInterceptor>(Predicates.ForService("*Service"));
             });
             return services.BuildAspectCoreServiceProvider();
