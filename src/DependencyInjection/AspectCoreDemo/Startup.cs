@@ -22,11 +22,11 @@ namespace AspectCoreDemo
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            //services.AddTransient<CustomInterceptor>();
+            services.AddSingleton<CustomInterceptor>();
             services.AddTransient<ICustomService, CustomService>();
             services.AddDynamicProxy(config =>
             {
-                config.Interceptors.AddTyped<CustomInterceptor>();
+                //config.Interceptors.AddTyped<CustomInterceptor>();
             });
             return services.BuildAspectCoreServiceProvider();
         }

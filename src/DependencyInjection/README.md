@@ -6,9 +6,10 @@
     ``` csharp
     public class CustomInterceptorAttribute : AbstractInterceptorAttribute 
     {
+        //ps : 只有使用 config.Interceptors.AddTyped<CustomInterceptor>(); 时，属性注入才生效， 
+        //     不能使用以下这种方式 services.AddSingleton<CustomInterceptor>(); + [ServiceInterceptor(typeof(CustomInterceptor))]
         [FromContainer]
         public ILogger<CustomInterceptorAttribute> Logger { get; set; }
-
 
         public override Task Invoke(AspectContext context, AspectDelegate next)
         {
@@ -20,6 +21,17 @@
     构造器注入需要使拦截器作为`Service`，除全局拦截器外，仍可使用`ServiceInterceptor`使拦截器从DI中激活：
 
     ``` csharp
+    public class CustomInterceptorAttribute : AbstractInterceptorAttribute 
+    {
+        private readonly ILogger<CustomInterceptor> ctorlogger;
+
+        // ps : 当全局配置 config.Interceptors.AddTyped<CustomInterceptor>(); 时，构造器注入无法自动注入，需要手动处理
+        //      只有使用 services.AddSingleton<CustomInterceptor>(); + [ServiceInterceptor(typeof(CustomInterceptor))] 才会自动注入
+        public CustomInterceptor(ILogger<CustomInterceptor> ctorlogger)
+        {
+            this.ctorlogger = ctorlogger;
+        }
+    }
     public interface ICustomService
     {
         [ServiceInterceptor(typeof(CustomInterceptorAttribute))]

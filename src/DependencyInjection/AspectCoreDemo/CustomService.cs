@@ -5,7 +5,7 @@ namespace AspectCoreDemo
 {
     public interface ICustomService
     {
-        //[ServiceInterceptor(typeof(CustomInterceptor))]
+        [ServiceInterceptor(typeof(CustomInterceptor))]
         void Call();
     }
 
